@@ -77,13 +77,14 @@ export class MediaService {
       where: { id },
     });
 
-    if (!record)
+    if (!record || record.isDeleted == true)
       throw new NotFoundException(`Record with the id of ${id} not found `);
 
     if (record.status === status)
       throw new BadRequestException(`Status is already set to ${status}`);
 
     record.status = status;
+    record.updated_at = new Date();
     return await this.mediaRepository.save(record);
   }
 

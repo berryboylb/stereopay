@@ -121,7 +121,8 @@ export class MediaController {
     const record = await this.mediaService.findByTitleOrDescription(
       query.query,
     );
-    if (!record) throw new NotFoundException('Record not found');
+    if (!record || record.isDeleted == true)
+      throw new NotFoundException('Record not found');
     return res.status(HttpStatus.OK).json({
       status: 'success',
       message: 'successfully fetched record',
@@ -135,7 +136,7 @@ export class MediaController {
   @Get('/:id')
   async getMediaById(@Res() res: Response, @Param('id') id: number) {
     const record = await this.mediaService.findById(id);
-    if (!record)
+    if (!record || record.isDeleted == true)
       throw new NotFoundException(`Record with the id of ${id} not found `);
     return res.status(HttpStatus.OK).json({
       status: 'success',
